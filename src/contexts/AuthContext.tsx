@@ -1,5 +1,11 @@
 // src/contexts/AuthContext.tsx
-import React, { createContext, useContext, useReducer, ReactNode, useEffect } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useReducer,
+  ReactNode,
+  useEffect,
+} from 'react';
 import { AuthState, User } from '../types';
 import { authApi } from '../services/api/authApi';
 import { storageService, StorageKeys } from '../services/storage/storage';
@@ -51,7 +57,9 @@ const authReducer = (state: AuthState, action: AuthAction): AuthState => {
   }
 };
 
-export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const AuthProvider: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
 
   useEffect(() => {
@@ -88,6 +96,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const sendOTP = async (mobileNumber: string): Promise<boolean> => {
     try {
       const response = await authApi.sendOTP({ mobileNumber });
+      // console.log('sendOTP response', response);
       return response.success;
     } catch (error) {
       console.error('Error sending OTP:', error);
@@ -103,7 +112,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       if (response.success && response.token && response.user) {
         await Promise.all([
           storageService.setItem(StorageKeys.AUTH_TOKEN, response.token),
-          storageService.setItem(StorageKeys.USER_DATA, JSON.stringify(response.user)),
+          storageService.setItem(
+            StorageKeys.USER_DATA,
+            JSON.stringify(response.user),
+          ),
         ]);
 
         dispatch({
@@ -123,7 +135,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     try {
       const response = await authApi.completeProfile({ languages });
       if (response.success && response.user) {
-        await storageService.setItem(StorageKeys.USER_DATA, JSON.stringify(response.user));
+        await storageService.setItem(
+          StorageKeys.USER_DATA,
+          JSON.stringify(response.user),
+        );
         dispatch({ type: 'UPDATE_USER', payload: response.user });
       }
     } catch (error) {

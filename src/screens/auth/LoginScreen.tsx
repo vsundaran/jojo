@@ -1,6 +1,12 @@
 // src/screens/auth/LoginScreen.tsx
 import React, { useState } from 'react';
-import { View, Alert, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import {
+  View,
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+} from 'react-native';
 import styled from 'styled-components/native';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useAuth } from '../../contexts/AuthContext';
@@ -8,6 +14,7 @@ import { Container } from '../../components/common/Container';
 import { Header } from '../../components/common/Header';
 import { Button } from '../../components/common/Button';
 import { Input } from '../../components/common/Input';
+import { apiClient } from '@services/api/apiClient';
 
 const Content = styled.View<{ theme: any }>`
   flex: 1;
@@ -35,14 +42,21 @@ const FormContainer = styled.View<{ theme: any }>`
 `;
 
 const OTPContainer = styled.View<{ theme: any }>`
-  flex-direction: row;
-  justify-content: space-between;
   margin-top: ${({ theme }) => theme.spacing.md}px;
+  align-items: center;
 `;
+
+// const OTPInput = styled.(Input)`
+//   flex: 1;
+//   margin-right: ${({ theme }) => theme.spacing.sm}px;
+// `;
 
 const OTPInput = styled(Input)`
   flex: 1;
-  margin-right: ${({ theme }) => theme.spacing.sm}px;
+  margin-right: ${({ theme }) => 10}px;
+  text-align: center;
+  align-items: center;
+  width: 100%;
 `;
 
 const ResendText = styled.Text<{ theme: any }>`
@@ -55,10 +69,10 @@ const ResendText = styled.Text<{ theme: any }>`
 export const LoginScreen: React.FC = () => {
   const theme = useTheme();
   const { sendOTP, login, isLoading } = useAuth();
-  
+
   const [mobileNumber, setMobileNumber] = useState('');
   const [otp, setOtp] = useState('');
-  const [otpSent, setOtpSent] = useState(false);
+  const [otpSent, setOtpSent] = useState(true);
   const [countdown, setCountdown] = useState(0);
 
   const handleSendOTP = async (): Promise<void> => {
@@ -67,6 +81,8 @@ export const LoginScreen: React.FC = () => {
       return;
     }
 
+    // const response = await apiClient.post('/auth/send-otp', { mobileNumber });
+    console.log(mobileNumber, 'mobileNumber');
     try {
       const success = await sendOTP(mobileNumber);
       if (success) {
@@ -76,13 +92,17 @@ export const LoginScreen: React.FC = () => {
         Alert.alert('Success', 'OTP sent to your mobile number');
       }
     } catch (error: any) {
-      Alert.alert('Error', error.response?.data?.message || 'Failed to send OTP');
+      console.log(error, 'error');
+      Alert.alert(
+        'Error',
+        error.response?.data?.message || 'Failed to send OTP',
+      );
     }
   };
 
   const startCountdown = (): void => {
     const timer = setInterval(() => {
-      setCountdown((prev) => {
+      setCountdown(prev => {
         if (prev <= 1) {
           clearInterval(timer);
           return 0;
@@ -108,13 +128,15 @@ export const LoginScreen: React.FC = () => {
       await login(mobileNumber, otp);
       // Navigation is handled by the router based on auth state
     } catch (error: any) {
-      Alert.alert('Error', error.response?.data?.message || 'Failed to verify OTP');
+      Alert.alert(
+        'Error',
+        error.response?.data?.message || 'Failed to verify OTP',
+      );
     }
   };
 
   return (
     <Container>
-      <Header title="Welcome to JoJo" />
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={{ flex: 1 }}
@@ -138,9 +160,9 @@ export const LoginScreen: React.FC = () => {
               />
 
               {otpSent && (
-                <OTPContainer theme={theme}>
+                <View style={{ marginTop: theme.spacing.md }}>
                   <OTPInput
-                    label="Enter OTP"
+                    label="OTP"
                     placeholder="000000"
                     keyboardType="number-pad"
                     value={otp}
@@ -153,7 +175,7 @@ export const LoginScreen: React.FC = () => {
                     loading={isLoading}
                     style={{ marginTop: theme.spacing.lg }}
                   />
-                </OTPContainer>
+                </View>
               )}
 
               {!otpSent ? (
@@ -165,15 +187,12 @@ export const LoginScreen: React.FC = () => {
                   style={{ marginTop: theme.spacing.lg }}
                 />
               ) : (
-                <ResendText 
-                  theme={theme} 
+                <ResendText
+                  theme={theme}
                   onPress={handleResendOTP}
                   disabled={countdown > 0}
                 >
-                  {countdown > 0 
-                    ? `Resend OTP in ${countdown}s` 
-                    : 'Resend OTP'
-                  }
+                  {countdown > 0 ? `Resend OTP in ${countdown}s` : 'Resend OTP'}
                 </ResendText>
               )}
             </FormContainer>
