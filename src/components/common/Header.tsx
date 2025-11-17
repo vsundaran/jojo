@@ -5,9 +5,12 @@ import styled from 'styled-components/native';
 import { useTheme } from '../../contexts/ThemeContext';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-const HeaderContainer = styled.View<{ theme: any }>`
+import LinearGradient from 'react-native-linear-gradient';
+
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+const HeaderContainer = styled(LinearGradient)<{ theme: any }>`
   height: ${({ theme }) => theme.headerHeight}px;
-  background-color: ${({ theme }) => theme.colors.primary};
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
@@ -23,6 +26,10 @@ const HeaderTitle = styled.Text<{ theme: any }>`
 const HeaderButton = styled.TouchableOpacity<{ theme: any }>`
   padding: ${({ theme }) => theme.spacing.xs}px;
 `;
+const TopBar = styled.View<{ height: number; bg: string }>`
+  height: ${({ height }) => height}px;
+  background-color: ${({ bg }) => bg};
+`;
 
 interface HeaderProps {
   title: string;
@@ -30,20 +37,33 @@ interface HeaderProps {
   rightComponent?: React.ReactNode;
 }
 
-export const Header: React.FC<HeaderProps> = ({ title, onBack, rightComponent }) => {
+export const Header: React.FC<HeaderProps> = ({
+  title,
+  onBack,
+  rightComponent,
+}) => {
   const theme = useTheme();
+  const insets = useSafeAreaInsets(); // ← gets status bar height
 
   return (
-    <HeaderContainer theme={theme}>
-      <HeaderButton theme={theme} onPress={onBack}>
-        {onBack && <Icon name="arrow-back" size={24} color={theme.colors.background} />}
-      </HeaderButton>
-      
-      <HeaderTitle theme={theme}>{title}</HeaderTitle>
-      
-      <View>
-        {rightComponent || <View style={{ width: 24 }} />}
-      </View>
-    </HeaderContainer>
+    <View>
+      <TopBar height={insets.top} bg={theme.colors.statusBar} />
+      <HeaderContainer
+        theme={theme}
+        colors={theme.colors.gradientColors}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 0 }}
+      >
+        <HeaderButton theme={theme} onPress={onBack}>
+          {onBack && (
+            <Icon name="arrow-back" size={24} color={theme.colors.background} />
+          )}
+        </HeaderButton>
+
+        <HeaderTitle theme={theme}>{title}</HeaderTitle>
+
+        <View>{rightComponent || <View style={{ width: 24 }} />}</View>
+      </HeaderContainer>
+    </View>
   );
 };

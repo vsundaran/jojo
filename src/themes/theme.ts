@@ -4,7 +4,7 @@ import { scale, verticalScale } from 'react-native-size-matters';
 
 export const lightTheme: AppTheme = {
   colors: {
-    primary: '#6366F1', // Indigo
+    primary: '#414042', // Indigo
     secondary: '#EC4899', // Pink
     accent: '#10B981', // Emerald
     background: '#FFFFFF',
@@ -16,6 +16,8 @@ export const lightTheme: AppTheme = {
     textSecondary: '#6B7280',
     border: '#E5E7EB',
     placeholder: '#9CA3AF',
+    gradientColors: ['#E7F9EC', '#E0EAFF', '#FADAFF', '#FCE4EA', '#FFF0D0'],
+    statusBar: '#d2d2d2ff',
   },
   spacing: {
     xs: scale(4),

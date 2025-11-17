@@ -14,7 +14,6 @@ import { Container } from '../../components/common/Container';
 import { Header } from '../../components/common/Header';
 import { Button } from '../../components/common/Button';
 import { Input } from '../../components/common/Input';
-import { apiClient } from '@services/api/apiClient';
 
 const Content = styled.View<{ theme: any }>`
   flex: 1;
@@ -136,69 +135,74 @@ export const LoginScreen: React.FC = () => {
   };
 
   return (
-    <Container>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={{ flex: 1 }}
-      >
-        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-          <Content theme={theme}>
-            <Title theme={theme}>Join the Joy</Title>
-            <Subtitle theme={theme}>
-              Connect with people through meaningful video calls
-            </Subtitle>
+    <View style={{ flex: 1 }}>
+      <Header title="Login" />
+      <Container>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={{ flex: 1 }}
+        >
+          <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+            <Content theme={theme}>
+              <Title theme={theme}>Join the Joy</Title>
+              <Subtitle theme={theme}>
+                Connect with people through meaningful video calls
+              </Subtitle>
 
-            <FormContainer theme={theme}>
-              <Input
-                label="Mobile Number"
-                placeholder="Enter your mobile number"
-                keyboardType="phone-pad"
-                value={mobileNumber}
-                onChangeText={setMobileNumber}
-                editable={!otpSent}
-                maxLength={15}
-              />
+              <FormContainer theme={theme}>
+                <Input
+                  label="Mobile Number"
+                  placeholder="Enter your mobile number"
+                  keyboardType="phone-pad"
+                  value={mobileNumber}
+                  onChangeText={setMobileNumber}
+                  editable={!otpSent}
+                  maxLength={15}
+                />
 
-              {otpSent && (
-                <View style={{ marginTop: theme.spacing.md }}>
-                  <OTPInput
-                    label="OTP"
-                    placeholder="000000"
-                    keyboardType="number-pad"
-                    value={otp}
-                    onChangeText={setOtp}
-                    maxLength={6}
-                  />
+                {otpSent && (
+                  <View style={{ marginTop: theme.spacing.md }}>
+                    <OTPInput
+                      label="OTP"
+                      placeholder="000000"
+                      keyboardType="number-pad"
+                      value={otp}
+                      onChangeText={setOtp}
+                      maxLength={6}
+                    />
+                    <Button
+                      title="Verify"
+                      onPress={handleVerifyOTP}
+                      loading={isLoading}
+                      style={{ marginTop: theme.spacing.lg }}
+                    />
+                  </View>
+                )}
+
+                {!otpSent ? (
                   <Button
-                    title="Verify"
-                    onPress={handleVerifyOTP}
+                    title="Send OTP"
+                    onPress={handleSendOTP}
                     loading={isLoading}
+                    fullWidth
                     style={{ marginTop: theme.spacing.lg }}
                   />
-                </View>
-              )}
-
-              {!otpSent ? (
-                <Button
-                  title="Send OTP"
-                  onPress={handleSendOTP}
-                  loading={isLoading}
-                  fullWidth
-                  style={{ marginTop: theme.spacing.lg }}
-                />
-              ) : (
-                <ResendText
-                  theme={theme}
-                  onPress={handleResendOTP}
-                  disabled={countdown > 0}
-                >
-                  {countdown > 0 ? `Resend OTP in ${countdown}s` : 'Resend OTP'}
-                </ResendText>
-              )}
-            </FormContainer>
-          </Content>
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </Container>
+                ) : (
+                  <ResendText
+                    theme={theme}
+                    onPress={handleResendOTP}
+                    disabled={countdown > 0}
+                  >
+                    {countdown > 0
+                      ? `Resend OTP in ${countdown}s`
+                      : 'Resend OTP'}
+                  </ResendText>
+                )}
+              </FormContainer>
+            </Content>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </Container>
+    </View>
   );
 };

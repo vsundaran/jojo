@@ -86,6 +86,8 @@ export interface AppTheme {
     textSecondary: string;
     border: string;
     placeholder: string;
+    gradientColors: [string, string, string, string, string];
+    statusBar: string;
   };
   spacing: {
     xs: number;
@@ -108,4 +110,33 @@ export interface AppTheme {
     lg: number;
   };
   headerHeight: number;
+}
+
+
+export interface CallSession {
+  id: string;
+  callId: string;
+  moment: Moment;
+  creator: User;
+  participant: User;
+  category: string;
+  subCategory: string;
+  languages: string[];
+  status: 'initiated' | 'connected' | 'completed' | 'failed' | 'reported';
+  startTime: string;
+  endTime?: string;
+  duration: number;
+  creatorToken?: string;
+  participantToken?: string;
+  azureCallConnectionId?: string;
+}
+
+export interface CategoryCount {
+  _id: string;
+  count: number;
+}
+
+export interface AvailableMomentsResponse {
+  moments: Moment[];
+  categoryCounts: CategoryCount[];
 }
