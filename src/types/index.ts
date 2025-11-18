@@ -1,4 +1,3 @@
-// src/types/index.ts
 export interface User {
   id: string;
   name: string;
@@ -88,6 +87,7 @@ export interface AppTheme {
     placeholder: string;
     gradientColors: [string, string, string, string, string];
     statusBar: string;
+    jojoLogoColor: string;
   };
   spacing: {
     xs: number;
@@ -111,7 +111,6 @@ export interface AppTheme {
   };
   headerHeight: number;
 }
-
 
 export interface CallSession {
   id: string;

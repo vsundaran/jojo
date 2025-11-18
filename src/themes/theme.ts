@@ -17,7 +17,8 @@ export const lightTheme: AppTheme = {
     border: '#E5E7EB',
     placeholder: '#9CA3AF',
     gradientColors: ['#E7F9EC', '#E0EAFF', '#FADAFF', '#FCE4EA', '#FFF0D0'],
-    statusBar: '#d2d2d2ff',
+    statusBar: '#ffffffff',
+    jojoLogoColor: '#F7941D',
   },
   spacing: {
     xs: scale(4),
